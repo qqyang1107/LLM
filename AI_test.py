@@ -17,7 +17,7 @@ def search_duckduckgo(query, max_results=3):
     return "\n\n".join(results) if results else "No results found."
 
 # Define LLM
-model_name = "gemma3:4b"
+model_name = "qwen3:14b"
 stream_handler = StreamHandler()
 llm = ChatOllama(model=model_name, callbacks=[stream_handler])  # Changed to ChatOllama
 
