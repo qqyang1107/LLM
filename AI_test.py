@@ -11,11 +11,14 @@ from langchain.tools import Tool
 from langgraph.prebuilt import create_react_agent
 from langchain.callbacks.base import BaseCallbackHandler
 from duckduckgo_search import DDGS
-import math
 import requests
 from bs4 import BeautifulSoup
 import os
-import json
+
+# 指定 output 資料夾作為所有檔案操作根目錄
+output_dir = os.path.join(os.path.dirname(__file__), "output")
+os.makedirs(output_dir, exist_ok=True)  # 確保資料夾存在
+
 
 # 串流回應處理器（即時輸出 LLM token）
 class StreamHandler(BaseCallbackHandler):
@@ -33,8 +36,9 @@ def search_duckduckgo(query, max_results=3):
 
 # 本地檔案閱讀工具
 def read_file_content(filename: str) -> str:
+    filepath = os.path.join(output_dir, filename)
     try:
-        with open(filename, "r", encoding="utf-8") as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             return f.read()
     except Exception as e:
         return f"Error reading file: {str(e)}"
@@ -52,7 +56,7 @@ def fetch_webpage(url: str) -> str:
 
 # 新增：建立資料夾工具
 def create_folder(args: dict) -> str:
-    path = args.get("path")
+    path = os.path.join(output_dir, args.get("path", ""))
     try:
         os.makedirs(path, exist_ok=True)
         return f"資料夾已建立或已存在：{path}"
@@ -61,7 +65,7 @@ def create_folder(args: dict) -> str:
 
 # 新增：寫入檔案工具
 def write_text_file(args: dict) -> str:
-    filename = args.get("filename")
+    filename = os.path.join(output_dir, args.get("filename", ""))
     content = args.get("content")
     try:
         with open(filename, "w", encoding="utf-8") as f:
@@ -72,7 +76,7 @@ def write_text_file(args: dict) -> str:
 
 # 新增：附加寫入檔案工具
 def append_text_file(args: dict) -> str:
-    filename = args.get("filename")
+    filename = os.path.join(output_dir, args.get("filename", ""))
     content = args.get("content")
     try:
         with open(filename, "a", encoding="utf-8") as f:
