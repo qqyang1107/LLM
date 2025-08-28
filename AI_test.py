@@ -74,16 +74,6 @@ def write_text_file(args: dict) -> str:
     except Exception as e:
         return f"Error: {str(e)}"
 
-# 新增：附加寫入檔案工具
-def append_text_file(args: dict) -> str:
-    filename = os.path.join(output_dir, args.get("filename", ""))
-    content = args.get("content")
-    try:
-        with open(filename, "a", encoding="utf-8") as f:
-            f.write(content)
-        return f"已附加內容至：{filename}"
-    except Exception as e:
-        return f"Error: {str(e)}"
 
 # 初始化 LLM
 model_name = "qwen3:14b"
@@ -96,11 +86,6 @@ tools = [
         name="DuckDuckGo Search",
         func=search_duckduckgo,
         description="用來即時搜尋網路資訊，適合查詢最新消息、事實、定義等"
-    ),
-    Tool(
-        name="File Reader",
-        func=read_file_content,
-        description="輸入檔案名稱即可讀取本地文字檔案內容"
     ),
     Tool(
         name="Web Page Reader",
@@ -118,9 +103,9 @@ tools = [
         description="輸入 {'filename': 檔名, 'content': 內容} 將文字寫入檔案（會覆蓋）"
     ),
     Tool(
-        name="Append File",
-        func=append_text_file,
-        description="輸入 {'filename': 檔名, 'content': 要附加的內容} 將文字加到檔案尾端"
+        name="File Reader",
+        func=read_file_content,
+        description="輸入檔案名稱即可讀取本地文字檔案內容"
     )
 ]
 
